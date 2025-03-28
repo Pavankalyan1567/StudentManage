@@ -31,26 +31,7 @@ public abstract class User implements UserDetails{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long userId;
 	private String password;
-	public long getUserId() {
-		return userId;
-	}
-	public void setUserId(long userId) {
-		this.userId = userId;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public User(long userId, String password) {
-		super();
-		this.userId = userId;
-		this.password = password;
-	}
-	public User() {
-		super();
-	}
+	
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="User_Roles", joinColumns = {@JoinColumn(name="User_Id")},inverseJoinColumns = {@JoinColumn(name="Role_Name")})
@@ -64,6 +45,43 @@ public abstract class User implements UserDetails{
 		});
 		return authorities;
 }
+
+	public long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public User(long userId, String password, Set<Role> roles) {
+		super();
+		this.userId = userId;
+		this.password = password;
+		this.roles = roles;
+	}
+
+	public User() {
+		super();
+	}
+	
+	
 	
 	
 	
