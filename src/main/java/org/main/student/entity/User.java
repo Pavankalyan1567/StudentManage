@@ -1,0 +1,70 @@
+package org.main.student.entity;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User implements UserDetails{
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long userId;
+	private String password;
+	public long getUserId() {
+		return userId;
+	}
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public User(long userId, String password) {
+		super();
+		this.userId = userId;
+		this.password = password;
+	}
+	public User() {
+		super();
+	}
+	
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinTable(name="User_Roles", joinColumns = {@JoinColumn(name="User_Id")},inverseJoinColumns = {@JoinColumn(name="Role_Name")})
+	private Set<Role> roles;
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<Authority> authorities=new HashSet<Authority>();
+		this.roles.forEach(userRole->{
+			authorities.add(new Authority("ROLE_"+userRole.getRoleName()));
+		});
+		return authorities;
+}
+	
+	
+	
+}
